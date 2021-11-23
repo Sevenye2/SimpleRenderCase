@@ -1,0 +1,75 @@
+#version 330 core
+
+in vec2 texCoord;
+in float _time;
+
+uniform sampler2D tex;
+out vec4 FragColor;
+
+vec4 transform(float roll,float pitch,float offset,float speed)
+{
+	vec2 pivot = vec2(0.5,0.5);
+	
+	//tempCoord
+	vec2 tc = texCoord - pivot;
+	//Y旋转
+	float pitch_sin = sin(pitch);
+	float pitch_cos = cos(pitch);
+	mat2 pitch_M = mat2(pitch_cos, -pitch_sin, pitch_sin, pitch_cos);
+	tc = pitch_M * tc + pivot;
+
+	//roll
+	float roll_max = max(roll,1.0);
+	tc = vec2(tc.x ,roll_max * (tc.y - 0.5) + 0.5 + offset);
+
+	//yaw
+	float yaw_sin = sin(speed * _time);
+	float yaw_cos= cos(speed * _time);
+	mat2 yaw_M= mat2(yaw_cos,-yaw_sin,yaw_sin,yaw_cos);
+
+	tc = yaw_M * (tc -pivot) + pivot;
+
+	return texture2D(tex ,tc);
+}
+
+float lerp(float a ,float b,float t)
+{
+	return a + (b-a) *t;
+}
+
+vec3 lerp(vec3 a,vec3 b,float t)
+{
+	return vec3(lerp(a.r,b.r,t) ,lerp(a.g,b.g,t),lerp(a.b,b.b,t));
+}
+
+float saturate(float a)
+{
+	return min(1,max(0,a));
+}
+
+void main()
+{
+	vec3 color_outside = vec3(0.07843138,0.3921569,0.7843137);
+	vec3 color_inside = vec3(0.73368281,0.1686274,1);
+	
+	//调整渐变区间
+	float t = saturate(length(1.5 * texCoord) - 0.25);
+	vec3 emissive = lerp(color_inside ,color_outside ,t) * 3;
+	vec4 finalColor = vec4(emissive, 1);
+
+	float offset_a = 0.5 * sin(_time);
+
+	float R = transform(3, 0.785, 0.6, -1.5).r;
+	float G = transform(3, 0.785, 0.25, 1.25).g;
+	float B = transform(3, 0.785, -0.15, -1).b;
+	float A = transform(3, 0.785, offset_a, 2).a;
+
+	vec4 r_color = vec4(R,R,R,R);
+	vec4 g_color = vec4(G,G,G,G);
+	vec4 b_color = vec4(B,B,B,B);
+	vec4 a_color = vec4(A,A,A,A);
+
+	vec4 shape =  r_color + g_color + b_color + a_color;
+
+	FragColor = shape * finalColor;
+}
