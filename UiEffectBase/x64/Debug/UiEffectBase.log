@@ -1,0 +1,8 @@
+﻿  main.cpp
+E:\project\project-cpp\SimpleRenderCase\UiEffectBase\main.cpp(2,1): warning C4005: “GLEW_STATIC”: 宏重定义
+E:\project\project-cpp\SimpleRenderCase\UiEffectBase\main.cpp : message : 参见“GLEW_STATIC”的前一个定义
+E:\project\project-cpp\SimpleRenderCase\UiEffectBase\main.cpp(143,31): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
+E:\project\project-cpp\SimpleRenderCase\UiEffectBase\main.cpp(144,48): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
+E:\project\project-cpp\SimpleRenderCase\UiEffectBase\main.cpp(144,34): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
+glew32sd.lib(glew.obj) : warning LNK4099: 未找到 PDB“glew_static.pdb”(使用“glew32sd.lib(glew.obj)”或在“E:\project\project-cpp\SimpleRenderCase\x64\Debug\glew_static.pdb”中寻找)；正在链接对象，如同没有调试信息一样
+  UiEffectBase.vcxproj -> E:\project\project-cpp\SimpleRenderCase\x64\Debug\RollSpace.exe

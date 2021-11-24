@@ -1,10 +1,10 @@
 //------opengl-------
 #define GLEW_STATIC
-#include "./GL/glew.h"
-#include "./GLFW/glfw3.h"
+#include <GL/glew.h>
+#include <GLFW/glfw3.h>
 //------stb_image------
 #define STB_IMAGE_IMPLEMENTATION
-#include "../../stb-master/stb_image.h"
+#include "../packages/stb-master/stb_image.h"
 //------other----------
 #include <iostream>
 #include <string>
@@ -141,6 +141,7 @@ int main(int argc,char* argv[])
 
 		double t = glfwGetTime();
 		rollSpace->setFloat("time", t);
+		rollSpace->setVec2("pos", 0.5f * cos(t),0.5f * sin(t));
 		rollSpace->use();
 
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
