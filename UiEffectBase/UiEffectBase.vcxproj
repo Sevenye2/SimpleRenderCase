@@ -21,9 +21,9 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <ProjectGuid>{6DE90F7F-6F6D-4CA2-8BEE-E9AD0F29A6AB}</ProjectGuid>
-    <RootNamespace>UiEffectBase</RootNamespace>
+    <RootNamespace>OpenGLLearn</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
-    <ProjectName>RollSpace</ProjectName>
+    <ProjectName>OpenGLCase</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -154,13 +154,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <Text Include="fragment.txt" />
-    <Text Include="vertex.txt" />
-  </ItemGroup>
-  <ItemGroup>
-    <Image Include="T_UIshape_02.tga" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

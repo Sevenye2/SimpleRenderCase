@@ -1,4 +1,4 @@
-#version 330 core
+ï»¿#version 330 core
 
 in vec2 texCoord;
 in float _time;
@@ -12,7 +12,7 @@ vec4 transform(float roll,float pitch,float offset,float speed)
 	
 	//tempCoord
 	vec2 tc = texCoord - pivot;
-	//YĞı×ª
+	//YÃÃ½Ã—Âª
 	float pitch_sin = sin(pitch);
 	float pitch_cos = cos(pitch);
 	mat2 pitch_M = mat2(pitch_cos, -pitch_sin, pitch_sin, pitch_cos);
@@ -52,7 +52,7 @@ void main()
 	vec3 color_outside = vec3(0.07843138,0.3921569,0.7843137);
 	vec3 color_inside = vec3(0.73368281,0.1686274,1);
 	
-	//µ÷Õû½¥±äÇø¼ä
+	// color
 	float t = saturate(length(1.5 * texCoord) - 0.25);
 	vec3 emissive = lerp(color_inside ,color_outside ,t) * 3;
 	vec4 finalColor = vec4(emissive, 1);

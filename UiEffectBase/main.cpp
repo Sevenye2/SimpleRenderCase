@@ -1,5 +1,8 @@
 //------opengl-------
+#ifndef GLEW_STATIC
 #define GLEW_STATIC
+#endif // GLEW_STATIC
+
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 //------stb_image------
@@ -11,9 +14,12 @@
 
 #include "Shader.h"
 
+// or other
+#define RollSpace
+
 float verteices[] =
 {
-	//---位置------    ----纹理-----
+	//---position---   ---texcoord---
 	-0.5f, 0.5f,0.5f,	0.0f,1.0f,
 	 0.5f, 0.5f,0.5f,	1.0f,1.0f,
 	 0.5f,-0.5f,0.5f,	1.0f,0.0f,
@@ -31,7 +37,7 @@ void load_image(const char* path, GLint internalformat)
 	int width, height, nrChannel;
 	unsigned char* data = stbi_load(path, &width, &height, &nrChannel, 0);
 
-	//纠错
+	// error notication
 	if (data)
 	{
 		glTexImage2D(GL_TEXTURE_2D, 0, internalformat, width, height, 0, internalformat, GL_UNSIGNED_BYTE, data);
@@ -44,39 +50,52 @@ void load_image(const char* path, GLint internalformat)
 	stbi_image_free(data);
 }
 
+void ReadRollSpaceTexture()
+{
+#pragma region TEXTURE
+
+
+
+#pragma endregion
+}
+void ReadWorldMapTexture(int tex, int )
+{
+
+}
+
 int main(int argc,char* argv[])
 {
-#pragma region 初始化 与 开窗
-	glfwInit();//初始化
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);//主版本号
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);//次版本号
-	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);//配置文件
+#pragma region init and open window
+	glfwInit(); //initalize
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);//Main Version
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);//Sub version
+	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE); // Configuration
 
 	GLFWwindow* window = glfwCreateWindow(600, 600, "MY WINDOW", NULL, NULL);
 
 	if (NULL == window)
 	{
-		printf("开窗失败");
+		printf("failed in open window");
 		glfwTerminate();
 		return -1;
 	}
 
-	glfwMakeContextCurrent(window);//将该窗口设置为操作窗口
+	glfwMakeContextCurrent(window); // set this window to operational window
 
 	//Init GLWE
 	glewExperimental = true;
 
 	if (GLEW_OK != glewInit())
 	{
-		printf("有问题");
+		printf("there is some problem happend that i don't know");
 		glfwTerminate();
 		return -1;
 	}
 
-	glViewport(0, 0, 600, 600);//视窗矩形大小
+	glViewport(0, 0, 600, 600);// size of view window
 #pragma endregion
 
-#pragma region 绑定vao vbo
+#pragma region binding vao vbo
 	unsigned int VAO;
 	glGenVertexArrays(1, &VAO);
 	glBindVertexArray(VAO);
@@ -85,10 +104,10 @@ int main(int argc,char* argv[])
 	glGenBuffers(1, &VBO);
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(verteices), verteices, GL_STATIC_DRAW);
-//挖数据
+
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
 	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
-//激活数据
+
 	glEnableVertexAttribArray(0);
 	glEnableVertexAttribArray(1);
 
@@ -97,27 +116,50 @@ int main(int argc,char* argv[])
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices),indices,GL_STATIC_DRAW);
 #pragma endregion
-
-#pragma region TEXTURE
-
-	glActiveTexture(GL_TEXTURE0);//激活纹理0位置 开始操作
-	unsigned int tex01;
-	glGenTextures(1, &tex01);
-	glBindTexture(GL_TEXTURE_2D, tex01);
-
 	float borderColor[4] = { 0.0f,0.0f,0.0f,0.0f };
+#ifdef RollSpace
+//Load RollSpace
+	glActiveTexture(GL_TEXTURE0);
+	unsigned int rollTex;
+	glGenTextures(1, &rollTex);
+	glBindTexture(GL_TEXTURE_2D, rollTex);
+
+	glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);//horizontal
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);//vertical
+
+	stbi_set_flip_vertically_on_load(true);
+	load_image("Texture/T_UIshape_02.tga", GL_RGBA);
+
+	Shader* rollSpace = new Shader("Shader/vertxCommon.txt", "Shader/m_RollSpaceFrag.txt");
+
+#else
+
+//Load World Map 
+	glActiveTexture(GL_TEXTURE0);
+	unsigned int tex;
+	glGenTextures(1, &tex);
+	glBindTexture(GL_TEXTURE_2D, tex);
+
+	glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+	stbi_set_flip_vertically_on_load(true);
+	load_image("Texture/T_GlobalMap.tga", GL_RGBA);
+
+	glActiveTexture(GL_TEXTURE1);
+	unsigned int sphereUV;
+	glGenTextures(1, &sphereUV);
+	glBindTexture(GL_TEXTURE_2D, sphereUV);
+
 	glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);//横轴
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);//纵轴
-
 	stbi_set_flip_vertically_on_load(true);
-	load_image("T_UIshape_02.tga", GL_RGBA);
+	load_image("Texture/T_UV_Sphere_F.tga", GL_RGB);
 
-#pragma endregion
-
-#pragma region SHADER
-	Shader* rollSpace = new Shader("vertex.txt", "fragment.txt");
-#pragma endregion
+	Shader* worldMap = new Shader("Shader/vertxCommon.txt", "Shader/m_WorldMapFrag.txt");
+#endif
 
 #pragma region GL Setting
 	glClearColor(0.0f, 0.0f, 0.0f, 1);
@@ -138,14 +180,26 @@ int main(int argc,char* argv[])
 		}
 
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
+		// get time
 		double t = glfwGetTime();
+
+#ifdef RollSpace
 		rollSpace->setFloat("time", t);
-		rollSpace->setVec2("pos", 0.5f * cos(t),0.5f * sin(t));
 		rollSpace->use();
+#else
+		glActiveTexture(GL_TEXTURE0);
+		worldMap->setInt("tex", 0);
+		glBindTexture(GL_TEXTURE_2D, tex);
+
+		glActiveTexture(GL_TEXTURE1);
+		worldMap->setInt("sphereUV", 1);
+		glBindTexture(GL_TEXTURE_2D, sphereUV);
+		worldMap->setFloat("time", t);
+		worldMap->use();
+#endif
 
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-	
+
 		glfwPollEvents();
 		glfwSwapBuffers(window);
 	}

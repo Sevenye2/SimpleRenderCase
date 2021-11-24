@@ -1,0 +1,73 @@
+#version 330 core
+
+in vec2 texCoord;
+in float _time;
+
+uniform sampler2D tex;
+uniform sampler2D sphereUV;
+out vec4 FragColor;
+
+vec2 trans(float ang)
+{
+	float _sin = sin(ang * _time);
+	float _cos = cos(ang * _time);
+	mat2 rota = mat2(_cos,-_sin,_sin,_cos);
+	return rota * (texCoord - 0.5) + 0.5;
+}
+
+float random()
+{
+	float time = 0.025 * _time;
+	float _skew = 0.2127 + 0.025 * time + 0.3713 * time * time;
+	float _rnd = 4.789 * sin(489.123 * _skew);
+	return _rnd;
+}
+
+float saturate(float x)
+{
+	return max(0,min(1,x));
+}
+
+void main()
+{
+	//天青色
+	vec3 emissive = vec3(0,0.6239552,1);
+
+	float R_Shape = texture2D(tex,trans(2.0)).r;
+	float G_Shape = texture2D(tex,trans(-0.5)).g;
+	float B_Shape = texture2D(tex,trans(0.5)).b;
+	float outRing = R_Shape + G_Shape + B_Shape;
+
+	float len = length(2 * texCoord - 1);
+	//球形UV
+
+	float sphereSize = 0.75;
+	vec2 sphereCoord = (texCoord - 0.5) / sphereSize + 0.5;
+	vec4 sphereUV = texture2D(sphereUV,sphereCoord);
+	float circleMask = step(len,sphereSize);
+
+	//扫描线
+	float scanLineDensity = 100;
+	float scanLine = 0.1;
+	float scanSpeed = 0.1;
+	float scan = abs(sin((texCoord.g + scanSpeed * _time) * scanLineDensity));
+	float scanNoise = scan * step(0.925,random()) * 0.01;
+
+	//地图形状
+	float rollSpeed = 0.1;
+	vec2 map_front_uv = fract(sphereUV.rg + vec2(scanNoise + rollSpeed * _time,0));
+	float map_front = texture2D(tex,map_front_uv).a;
+	vec2 map_back_uv = fract(sphereUV.rg - vec2(0.5 + rollSpeed *_time,0));
+	float map_back = texture2D(tex,map_back_uv).a;
+	//菲涅尔
+	float fresnel = pow(len,3) * 0.3;
+	
+	float map_shape = 0.1 * sphereUV.b + map_front + scan * scanLine + 0.5 * map_back + fresnel;
+	
+	//图片中处理好的描边与纹路 真的是没什么技术含量 恶心
+	float outColor = 1;  
+	float innerColor = 0.75 + 16 * map_front * (1 - map_front) + fresnel;
+	vec3 finalColor = emissive * (outColor * (1 - sphereUV.b) + innerColor * sphereUV.b);
+ 
+	FragColor = vec4(finalColor, outRing + map_shape * circleMask);
+}

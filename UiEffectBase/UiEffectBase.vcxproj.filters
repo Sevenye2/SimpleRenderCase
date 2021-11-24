@@ -30,11 +30,4 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Text Include="fragment.txt" />
-    <Text Include="vertex.txt" />
-  </ItemGroup>
-  <ItemGroup>
-    <Image Include="T_UIshape_02.tga" />
-  </ItemGroup>
 </Project>
