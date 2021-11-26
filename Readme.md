@@ -14,7 +14,7 @@
 
 <img src=".\mdasset\RollSpace.gif" alt="RollSpace" style="zoom:25%;" />
 
-![figure1](.\mdasset\figure1.png)
+![figure1](public\mdasset\figure1.png)
 
 
 
