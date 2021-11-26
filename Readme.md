@@ -14,9 +14,7 @@
 
 <img src=".\mdasset\RollSpace.gif" alt="RollSpace" style="zoom:25%;" />
 
-![figure1](.\mdasset\figure1.png)
-
-
+<img src=".\mdasset\figure1.png" alt="Figure1"  />
 
 
 
@@ -36,7 +34,7 @@ The each operations of transform is position, position, scale.  The order of tho
 
 
 
-![figure2](.\mdasset\figure2.png)
+<img src=".\mdasset\figure2.png" alt="Figure2"  />
 
 The **figure 2-1** is the resource of texture and the other images is the each channel in this texture.
 
@@ -44,7 +42,7 @@ figure 2-2 to figure 2-4 is applied simple rotation in coordinate of UV.
 
 
 
-![figure3](.\mdasset\figure3.png)
+<img src=".\mdasset\figure3.png" alt="Figure3"  />
 
 On the alpha channel. I use a texture to convert standard UV to a sphere shape then sample the texture color. 
 
