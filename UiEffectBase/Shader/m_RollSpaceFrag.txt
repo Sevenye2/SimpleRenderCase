@@ -12,7 +12,7 @@ vec4 transform(float roll,float pitch,float offset,float speed)
 	
 	//tempCoord
 	vec2 tc = texCoord - pivot;
-	//YÐý×ª
+	// pitch
 	float pitch_sin = sin(pitch);
 	float pitch_cos = cos(pitch);
 	mat2 pitch_M = mat2(pitch_cos, -pitch_sin, pitch_sin, pitch_cos);

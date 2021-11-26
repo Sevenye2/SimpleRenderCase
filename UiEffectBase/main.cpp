@@ -14,8 +14,9 @@
 
 #include "Shader.h"
 
-// or other
-#define RollSpace
+// which you wanna render
+//#define RollSpace
+#define WorldMap
 
 float verteices[] =
 {
@@ -92,7 +93,7 @@ int main(int argc,char* argv[])
 		return -1;
 	}
 
-	glViewport(0, 0, 600, 600);// size of view window
+	glViewport(0, 0, 1280, 1280);// size of view window
 #pragma endregion
 
 #pragma region binding vao vbo
@@ -133,7 +134,8 @@ int main(int argc,char* argv[])
 
 	Shader* rollSpace = new Shader("Shader/vertxCommon.txt", "Shader/m_RollSpaceFrag.txt");
 
-#else
+#endif
+#ifdef WorldMap
 
 //Load World Map 
 	glActiveTexture(GL_TEXTURE0);
@@ -186,7 +188,10 @@ int main(int argc,char* argv[])
 #ifdef RollSpace
 		rollSpace->setFloat("time", t);
 		rollSpace->use();
-#else
+		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+#endif
+
+#ifdef WorldMap
 		glActiveTexture(GL_TEXTURE0);
 		worldMap->setInt("tex", 0);
 		glBindTexture(GL_TEXTURE_2D, tex);
@@ -196,10 +201,8 @@ int main(int argc,char* argv[])
 		glBindTexture(GL_TEXTURE_2D, sphereUV);
 		worldMap->setFloat("time", t);
 		worldMap->use();
-#endif
-
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-
+#endif
 		glfwPollEvents();
 		glfwSwapBuffers(window);
 	}

@@ -30,7 +30,7 @@ float saturate(float x)
 
 void main()
 {
-	//天青色
+	// color of Azure
 	vec3 emissive = vec3(0,0.6239552,1);
 
 	float R_Shape = texture2D(tex,trans(2.0)).r;
@@ -39,32 +39,33 @@ void main()
 	float outRing = R_Shape + G_Shape + B_Shape;
 
 	float len = length(2 * texCoord - 1);
-	//球形UV
-
+	
+	//sphere UV
 	float sphereSize = 0.75;
 	vec2 sphereCoord = (texCoord - 0.5) / sphereSize + 0.5;
 	vec4 sphereUV = texture2D(sphereUV,sphereCoord);
 	float circleMask = step(len,sphereSize);
 
-	//扫描线
+	// scan line
 	float scanLineDensity = 100;
 	float scanLine = 0.1;
 	float scanSpeed = 0.1;
 	float scan = abs(sin((texCoord.g + scanSpeed * _time) * scanLineDensity));
 	float scanNoise = scan * step(0.925,random()) * 0.01;
 
-	//地图形状
+	// map's shape
 	float rollSpeed = 0.1;
 	vec2 map_front_uv = fract(sphereUV.rg + vec2(scanNoise + rollSpeed * _time,0));
 	float map_front = texture2D(tex,map_front_uv).a;
 	vec2 map_back_uv = fract(sphereUV.rg - vec2(0.5 + rollSpeed *_time,0));
 	float map_back = texture2D(tex,map_back_uv).a;
-	//菲涅尔
+	
+	// fresnel
 	float fresnel = pow(len,3) * 0.3;
 	
 	float map_shape = 0.1 * sphereUV.b + map_front + scan * scanLine + 0.5 * map_back + fresnel;
 	
-	//图片中处理好的描边与纹路 真的是没什么技术含量 恶心
+	// it's already solved about Outline and Pattern on the texture. that is nothing can be called technic, gross.
 	float outColor = 1;  
 	float innerColor = 0.75 + 16 * map_front * (1 - map_front) + fresnel;
 	vec3 finalColor = emissive * (outColor * (1 - sphereUV.b) + innerColor * sphereUV.b);
