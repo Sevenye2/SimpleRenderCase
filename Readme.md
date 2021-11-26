@@ -14,7 +14,7 @@
 
 <img src=".\mdasset\RollSpace.gif" alt="RollSpace" style="zoom:25%;" />
 
-![figure1](public\mdasset\figure1.png)
+![figure1](.\mdasset\figure1.png)
 
 
 
@@ -36,7 +36,7 @@ The each operations of transform is position, position, scale.  The order of tho
 
 
 
-![figure2](public\mdasset\figure2.png)
+![figure2](.\mdasset\figure2.png)
 
 The **figure 2-1** is the resource of texture and the other images is the each channel in this texture.
 
